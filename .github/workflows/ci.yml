@@ -12,7 +12,7 @@ jobs:
       matrix:
         runs-on: [macos-latest, ubuntu-latest]
         flags: ['', '--release']
-        fail_marker: ["!", ""]
+        fail_marker: ["", "!"]
 
     steps:
       - uses: actions/checkout@v4
