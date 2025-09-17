@@ -4,19 +4,21 @@ on:
   push:
 
 jobs:
-  works:
-    name: ${{ matrix.runs-on }} works with ${{ matrix.flags || 'no flags' }}
+  test:
+    name: "${{ matrix.runs-on }} (fixed: {{ !!matrix.fail_marker }}) with ${{ matrix.flags || 'no flags' }}"
     runs-on: ${{ matrix.runs-on }}
     strategy:
       fail-fast: false
       matrix:
         runs-on: [macos-latest, ubuntu-latest]
         flags: ['', '--release']
+        fail_marker: ["!", ""]
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Use fixed versions
+        if: "!matrix.fail_marker"
         run: cp ./.cargo/config.fixed.toml ./.cargo/config.toml
 
       - name: Sanity test unused
@@ -25,58 +27,21 @@ jobs:
         run: cargo run ${{ matrix.flags }} -p test-dylib
 
       - if: always()
-        run: cargo run ${{ matrix.flags }} -p test-unused --features mimalloc
+        run: "${{ matrix.fail_marker }} cargo run ${{ matrix.flags }} -p test-unused --features mimalloc"
       - if: always()
-        run: cargo run ${{ matrix.flags }} -p test-unused --features jemalloc
+        run: "${{ matrix.fail_marker }} cargo run ${{ matrix.flags }} -p test-unused --features jemalloc"
 
       - if: always()
-        run: cargo run ${{ matrix.flags }} -p test-dylib --features mimalloc
+        run: "${{ matrix.fail_marker }} cargo run ${{ matrix.flags }} -p test-dylib --features mimalloc"
       - if: always()
-        run: cargo run ${{ matrix.flags }} -p test-dylib --features jemalloc
+        run: "${{ matrix.fail_marker }} cargo run ${{ matrix.flags }} -p test-dylib --features jemalloc"
 
       - if: always()
-        run: cargo run ${{ matrix.flags }} -p test-dylib --features dylib-mimalloc,dylib-mentions
+        run: "${{ matrix.fail_marker }} cargo run ${{ matrix.flags }} -p test-dylib --features dylib-mimalloc,dylib-mentions"
       - if: always()
-        run: cargo run ${{ matrix.flags }} -p test-dylib --features dylib-jemalloc,dylib-mentions
+        run: "cargo run ${{ matrix.flags }} -p test-dylib --features dylib-jemalloc,dylib-mentions" # Succeeds even when broken
 
       - if: always()
-        run: cargo run ${{ matrix.flags }} -p test-dylib --features dylib-mimalloc
+        run: "cargo run ${{ matrix.flags }} -p test-dylib --features dylib-mimalloc" # Succeeds even when broken
       - if: always()
-        run: cargo run ${{ matrix.flags }} -p test-dylib --features dylib-jemalloc
-
-  broken:
-    name: ${{ matrix.runs-on }} broken with ${{ matrix.flags || 'no flags' }}
-    runs-on: ${{ matrix.runs-on }}
-    strategy:
-      fail-fast: false
-      matrix:
-        runs-on: [macos-latest, ubuntu-latest]
-        flags: ['', '--release']
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Sanity test unused
-        run: cargo run ${{ matrix.flags }} -p test-unused
-      - name: Sanity test dylib
-        run: cargo run ${{ matrix.flags }} -p test-dylib
-
-      - if: always()
-        run: "! cargo run ${{ matrix.flags }} -p test-unused --features mimalloc"
-      - if: always()
-        run: "! cargo run ${{ matrix.flags }} -p test-unused --features jemalloc"
-
-      - if: always()
-        run: "! cargo run ${{ matrix.flags }} -p test-dylib --features mimalloc"
-      - if: always()
-        run: "! cargo run ${{ matrix.flags }} -p test-dylib --features jemalloc"
-
-      - if: always()
-        run: "! cargo run ${{ matrix.flags }} -p test-dylib --features dylib-mimalloc,dylib-mentions"
-      - if: always()
-        run: cargo run ${{ matrix.flags }} -p test-dylib --features dylib-jemalloc,dylib-mentions # Succeeds even when broken
-
-      - if: always()
-        run: cargo run ${{ matrix.flags }} -p test-dylib --features dylib-mimalloc # Succeeds even when broken
-      - if: always()
-        run: cargo run ${{ matrix.flags }} -p test-dylib --features dylib-jemalloc # Succeeds even when broken
+        run: "cargo run ${{ matrix.flags }} -p test-dylib --features dylib-jemalloc" # Succeeds even when broken
