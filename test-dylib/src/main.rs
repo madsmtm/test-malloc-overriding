@@ -40,7 +40,7 @@ fn main() {
     let here = lookup_malloc_address();
 
     if cfg!(target_vendor = "apple") {
-        // macOS / Mach-O symbols are not overriden in dependencies, they are
+        // macOS / Mach-O symbols are not overidden in dependencies, they are
         // hooked into with `zone_register`.
         assert_eq!(c, c"/usr/lib/system/libsystem_malloc.dylib");
         #[cfg(not(feature = "dylib-mimalloc"))]
