@@ -18,10 +18,10 @@ jobs:
       - name: Use fixed versions
         run: cp ./.cargo/config.fixed.toml ./.cargo/config.toml
 
-      - name: Sanitiy test
-        run: |
-          cargo run -p test-unused
-          cargo run -p test-dylib
+      - name: Sanitiy test unused
+        run: cargo run -p test-unused
+      - name: Sanitiy test dylib
+        run: cargo run -p test-dylib
 
       - if: always()
         run: cargo run -p test-unused --features mimalloc
@@ -54,10 +54,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Sanitiy test
-        run: |
-          cargo run -p test-unused
-          cargo run -p test-dylib
+      - name: Sanitiy test unused
+        run: cargo run -p test-unused
+      - name: Sanitiy test dylib
+        run: cargo run -p test-dylib
 
       - if: always()
         run: "! cargo run -p test-unused --features mimalloc"
