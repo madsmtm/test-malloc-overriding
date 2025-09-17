@@ -1,0 +1,17 @@
+[package]
+name = "rust-dylib"
+version.workspace = true
+edition.workspace = true
+publish = false
+
+[dependencies]
+libc.workspace = true
+rust-dylib-inner.path = "inner"
+
+[features]
+# Whether the dylib itself overrides the allocator
+mimalloc = ["rust-dylib-inner/mimalloc"]
+jemalloc = ["rust-dylib-inner/jemalloc"]
+
+# Whether the dylib mentions a function from the allocator (to work around missing #[used])
+mentions = ["rust-dylib-inner/mentions"]

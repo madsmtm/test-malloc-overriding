@@ -1,0 +1,32 @@
+[workspace]
+members = [
+    "dl-utils",
+    "c-dylib",
+    "rust-dylib",
+    "rust-dylib/inner",
+    "test-unused",
+    "test-dylib",
+]
+resolver = "3"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "Zlib OR Apache-2.0 OR MIT"
+
+[workspace.dependencies]
+libc = { version = "0.2", default-features = false }
+cc = "1.0"
+
+mimalloc = { package = "libmimalloc-sys", version = "=0.1.44", features = [
+    "override",
+    "debug",
+] }
+jemalloc = { package = "tikv-jemalloc-sys", version = "=0.6.0", features = [
+    "unprefixed_malloc_on_supported_platforms",
+    "debug",
+] }
+
+dl-utils.path = "dl-utils"
+c-dylib.path = "c-dylib"
+rust-dylib.path = "rust-dylib"

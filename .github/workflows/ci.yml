@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+
+jobs:
+  works:
+    name: ${{ matrix.runs-on }} works
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on: [macos-latest, ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use fixed versions
+        run: cp ./.cargo/config.fixed.toml ./.cargo/config.toml
+
+      - if: always()
+        run: cargo run -p test-unused --features mimalloc
+      - if: always()
+        run: cargo run -p test-unused --features jemalloc
+
+      - if: always()
+        run: cargo run -p test-dylib --features mimalloc
+      - if: always()
+        run: cargo run -p test-dylib --features jemalloc
+
+      - if: always()
+        run: cargo run -p test-dylib --features dylib-mimalloc,dylib-mentions
+      - if: always()
+        run: cargo run -p test-dylib --features dylib-jemalloc,dylib-mentions
+
+      - if: always()
+        run: cargo run -p test-dylib --features dylib-mimalloc
+      - if: always()
+        run: cargo run -p test-dylib --features dylib-jemalloc
+
+  broken:
+    name: ${{ matrix.runs-on }} broken
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on: [macos-latest, ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - if: always()
+        run: "! cargo run -p test-unused --features mimalloc"
+      - if: always()
+        run: "! cargo run -p test-unused --features jemalloc"
+
+      - if: always()
+        run: "! cargo run -p test-dylib --features mimalloc"
+      -
+        run: "! cargo run -p test-dylib --features jemalloc"
+
+      - if: always()
+        run: "! cargo run -p test-dylib --features dylib-mimalloc,dylib-mentions"
+      - if: always()
+        run: "! cargo run -p test-dylib --features dylib-jemalloc,dylib-mentions"
+
+      - if: always()
+        run: "! cargo run -p test-dylib --features dylib-mimalloc"
+      - if: always()
+        run: "! cargo run -p test-dylib --features dylib-jemalloc"

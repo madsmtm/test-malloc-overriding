@@ -1,0 +1,17 @@
+[package]
+name = "rust-dylib-inner"
+version.workspace = true
+edition.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+libc.workspace = true
+dl-utils.workspace = true
+mimalloc = { workspace = true, optional = true }
+jemalloc = { workspace = true, optional = true }
+
+[features]
+mentions = []

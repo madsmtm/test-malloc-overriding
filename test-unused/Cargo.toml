@@ -1,0 +1,10 @@
+[package]
+name = "test-unused"
+version.workspace = true
+edition.workspace = true
+publish = false
+
+[dependencies]
+libc.workspace = true
+mimalloc = { workspace = true, optional = true }
+jemalloc = { workspace = true, optional = true }

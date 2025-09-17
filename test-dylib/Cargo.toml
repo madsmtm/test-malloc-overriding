@@ -1,0 +1,18 @@
+[package]
+name = "test-dylib"
+version.workspace = true
+edition.workspace = true
+publish = false
+
+[dependencies]
+libc.workspace = true
+c-dylib.workspace = true
+rust-dylib.workspace = true
+dl-utils.workspace = true
+mimalloc = { workspace = true, optional = true }
+jemalloc = { workspace = true, optional = true }
+
+[features]
+dylib-mimalloc = ["rust-dylib/mimalloc"]
+dylib-jemalloc = ["rust-dylib/jemalloc"]
+dylib-mentions = ["rust-dylib/mentions"]
