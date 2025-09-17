@@ -56,7 +56,7 @@ jobs:
 
       - if: always()
         run: "! cargo run -p test-dylib --features mimalloc"
-      -
+      - if: always()
         run: "! cargo run -p test-dylib --features jemalloc"
 
       - if: always()
