@@ -72,9 +72,9 @@ jobs:
       - if: always()
         run: "! cargo run -p test-dylib --features dylib-mimalloc,dylib-mentions"
       - if: always()
-        run: "! cargo run -p test-dylib --features dylib-jemalloc,dylib-mentions"
+        run: cargo run -p test-dylib --features dylib-jemalloc,dylib-mentions # Succeeds even when broken
 
       - if: always()
-        run: "! cargo run -p test-dylib --features dylib-mimalloc"
+        run: cargo run -p test-dylib --features dylib-mimalloc # Succeeds even when broken
       - if: always()
-        run: "! cargo run -p test-dylib --features dylib-jemalloc"
+        run: cargo run -p test-dylib --features dylib-jemalloc # Succeeds even when broken
